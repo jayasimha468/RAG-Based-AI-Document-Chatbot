@@ -201,16 +201,13 @@ if st.button("Process PDF"):
                     f"PDF processing failed: {e}"
                 )
 
+
 # Initialize chat history
 if "chat_history" not in st.session_state:
     st.session_state["chat_history"] = []
 
 # Question-answering section
 if "index" in st.session_state:
-
-    if st.button("Clear Chat History"):
-        st.session_state["chat_history"] = []
-        st.rerun()
 
     st.divider()
 
@@ -332,22 +329,6 @@ Answer:
                         )
                     )
 
-                    st.divider()
-                    st.subheader("Chat History")
-
-                    for i, chat in enumerate(
-                        st.session_state["chat_history"], start=1
-                    ):
-                        st.markdown(
-                            f"**Question {i}:** {chat['question']}"
-                        )
-                        st.markdown(
-                            f"**Answer:** {chat['answer']}"
-                        )
-                        st.caption(
-                            f"Source Pages: {chat['pages']}"
-                        )
-                        st.divider()
 
                 except requests.exceptions.ConnectionError:
 
@@ -361,6 +342,24 @@ Answer:
                     st.error(
                         f"Error generating answer: {e}"
                     )
+
+
+    # Chat History Section
+    st.divider()
+    st.subheader("Chat History")
+
+    if st.session_state["chat_history"]:
+        for i, chat in enumerate(st.session_state["chat_history"], 1):
+            st.markdown(f"**Question {i}:** {chat['question']}")
+            st.write("**Answer:**", chat["answer"])
+            st.write("**Source Pages:**", chat["pages"])
+            st.divider()
+
+        if st.button("Clear Chat History"):
+            st.session_state["chat_history"] = []
+            st.rerun()
+    else:
+        st.info("No chat history available.")
 
 else:
 
